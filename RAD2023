@@ -1,0 +1,19 @@
+/*A method that includes a query for a List of contacts and returns the Account Name and Industry as well. 
+ Use a loop to print the name of each Contact’s Account Name with System.debug.*/ 
+
+public class WeekTwoHomework {
+   Public Static void contactwithaccountindustry() 
+    {
+List<Contact> ctlist = [Select id, FirstName,LastName, Department, Account.Name,Account.Industry from Contact];
+    {
+    for(Contact c : ctlist) {
+     system.debug('Contact name with account and industry is'+c.FirstName+''+c.LastName 
+                  +''+c.Account.Industry+''+c.Account.Name);
+    }
+    }
+    }
+}
+Execute
+WeekTwoHomework.contactwithaccountindustry();
+
+
