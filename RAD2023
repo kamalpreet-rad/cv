@@ -21,21 +21,27 @@ WeekTwoHomework.contactwithaccountindustry();
 /*A method that includes a query for a list of Accounts AND 
 includes all their closed-won opportunities in a subquery. Use a loop to print out the name of each Account’s opportunity with System.debug*/
 
-   Public static void OpportinitiesAreClosedOne()
+
+    Public static void OpportinitiesAreClosedOne()
     {
        List<Account> listofaccount = [Select Name,
                                       (select Name,Amount,StageName from Opportunities where StageName = 'Closed Won')
                                       from Account
                                      ] ;
                     for( Account a: listofaccount)
-                    {
-                      system.debug('Name of Opportunity of an account is   ' +   a.Name);
-                        
-                    }
-                         
+                         {
+                            for(Opportunity opp: a.Opportunities)
+                                 {
+                                    system.debug('Opportunity is    '+ opp +'with Account'+ a.Name );
+                                     
+                                   }
+                                     
+                             system.debug('Name of Opportunity of an account is   ' +   a.Name);
+                                    
+                           }
+    }   
     
 
-}
 }
 Execute
 WeekTwoHomework.OpportinitiesAreClosedOne();
