@@ -1,3 +1,43 @@
+RecipeHandlerTrigger.cls
+
+trigger RecipeHandlerTrigger on Recipe__c (before insert, before update,after insert, after update)
+{
+    //new RecipeTriggerHandler().run();  // Not Working, getting null pointer error on handler class
+
+    if(Trigger.isBefore)
+    {
+        if(trigger.isInsert)
+        {
+            RecipeHandlerClass.checkRecipeInformation(Trigger.New);
+            RecipeHandlerClass.complexityRate(Trigger.New);
+        }
+        if(Trigger.isUpdate) 
+        {
+            RecipeHandlerClass.checkRecipeInformation(Trigger.New);
+            RecipeHandlerClass.complexityRate(Trigger.New);
+        }         
+    }
+
+    if(Trigger.isAfter)
+    {
+        if(trigger.isInsert)
+        {
+            
+        }
+        if(Trigger.isUpdate) 
+        {
+            RecipeHandlerClass.createReviewTask(Trigger.New);  
+
+        }         
+    }
+
+}
+
+
+
+
+RecipeHandlerClass.cls
+
 /*Create a method that will be called before a recipe is inserted or updated */
 
 public class RecipeHandlerClass
