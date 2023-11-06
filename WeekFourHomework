@@ -1,0 +1,71 @@
+/*Create a method that will be called before a recipe is inserted or updated */
+
+public class RecipeHandlerClass
+{
+
+    //to check the missing key  values
+    
+    Public Static Void checkRecipeInformation( List<Recipe__c> newRecipies)
+    {
+        System.debug('newRecipies-->'+newRecipies);
+        for(Recipe__c rec : newRecipies)
+        {
+            System.debug('rec-->'+rec);
+            if(String.isblank(rec.Name)|| (rec.Active_Time__c == null) ||String.isblank(rec.Description__c)||(rec.Active_Time_Units__c== null )||(rec.Servings__c == null))
+            {
+                rec.Draft__c = TRUE;
+            }
+            else
+            {
+                rec.Draft__c = FALSE;
+            }
+        }
+    }
+    
+    //Giving rating based on the return from helper method rateReciepecomplexcity//
+    
+   Public Static void complexityRate (List<Recipe__c> newRecipies)
+   {
+       for(Recipe__c rec : newRecipies)
+       {
+           Integer rating = Helperfunctions.rateRecipeComplexity(rec);
+           if(rating== 1)
+              {
+                  rec.Complexity__c = 'Simple';
+              }
+            else if (rating== 2)  
+            {
+                   rec.Complexity__c = ' Moderate';
+            }
+            else if(rating ==3)
+            {
+                   rec.Complexity__c = 'Difficult';
+            }                 
+       }
+   }
+
+
+    // Create Review Task if it is not a draft recipe  and used in cookbook
+
+    Public Static void createReviewTask (List<Recipe__c> newRecipies)
+   {
+      
+        List<Recipe_Usage__c> recipeUsageList = [Select Name, Recipe__c , Cookbook__c, Cookbook__r.OwnerId
+             from Recipe_Usage__c Where Recipe__r.Draft__c=false ] ;
+        Set<Id> taskSet = new Set<Id>();   
+        List<Task> taskList = new List<Task>();   
+        for( Recipe_Usage__c recUsage: recipeUsageList)
+        {
+           Task task = new Task();           
+           if(!taskSet.contains(recUsage.Cookbook__c)){
+            task.OwnerId= recUsage.Cookbook__r.OwnerId;
+            task.WhatId= recUsage.Cookbook__c;
+            task.ActivityDate=System.Today().addDays(7);  
+            taskSet.add(recUsage.Cookbook__c);
+            taskList.add(task);     
+           }
+                
+        }
+        insert taskList;
+   }
+}
